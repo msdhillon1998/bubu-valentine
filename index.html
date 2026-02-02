@@ -176,7 +176,7 @@ canvas{
 </div>
 
 <script>
-/* TYPEWRITER */
+/* TYPEWRITER (STOPPABLE) */
 const text="Bubu will you be my valentine?";
 const q=document.getElementById("question");
 let i=0, typingActive=true;
@@ -191,14 +191,14 @@ let i=0, typingActive=true;
 /* NO DODGE */
 const noBtn=document.getElementById("noBtn");
 const buttons=document.getElementById("buttons");
-noBtn.addEventListener("mouseenter",moveNo);
-noBtn.addEventListener("touchstart",moveNo);
 function moveNo(){
   noBtn.style.position="absolute";
   const r=buttons.getBoundingClientRect();
   noBtn.style.left=Math.random()*(r.width-96)+"px";
   noBtn.style.top=Math.random()*(r.height-48)+"px";
 }
+noBtn.addEventListener("mouseenter",moveNo);
+noBtn.addEventListener("touchstart",moveNo);
 
 /* HEARTS */
 const canvas=document.getElementById("hearts");
@@ -225,7 +225,7 @@ function drawHeart(x,y,s,a){
 
 function animate(){
   ctx.clearRect(0,0,canvas.width,canvas.height);
-  if(raining&&Math.random()<.25){
+  if(raining && Math.random()<.25){
     hearts.push({x:Math.random()*canvas.width,y:-20,s:12+Math.random()*10,v:1+Math.random()*1.5,d:Math.random()-0.5,a:1});
   }
   hearts.forEach(h=>{
@@ -237,7 +237,7 @@ function animate(){
 }
 animate();
 
-/* YES ACTION */
+/* YES ACTION + WHATSAPP REDIRECT */
 const yesBtn=document.getElementById("yesBtn");
 const dp=document.getElementById("dp");
 const dpImg=document.getElementById("dpImg");
@@ -248,20 +248,28 @@ yesBtn.onclick=()=>{
   typingActive=false;
   q.innerText="YAY 💖 It’s a date!";
 
-  // Change DP to kiss.gif
+  // Change DP
   dpImg.src="./kiss.gif";
 
   // Hide buttons + hint
-  document.getElementById("buttons").style.display="none";
+  buttons.style.display="none";
   hint.style.display="none";
 
-  // Show jwm.gif in center
+  // Show big jwm.gif
   jwm.style.display="block";
   raining=true;
 
+  // DP bounce
   dp.classList.remove("bounce");
   void dp.offsetWidth;
   dp.classList.add("bounce");
+
+  // 📱 WhatsApp redirect after 3s
+  setTimeout(()=>{
+    const msg = encodeURIComponent("I said YES 💖😊");
+    window.location.href =
+      "https://wa.me/919788480008?text=" + msg;
+  }, 3000);
 };
 
 onresize=()=>{
@@ -270,5 +278,7 @@ onresize=()=>{
 };
 </script>
 
+
 </body>
 </html>
+
