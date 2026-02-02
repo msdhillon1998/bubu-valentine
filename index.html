@@ -67,6 +67,9 @@ body{
   border:4px solid #ff4d6d;
   animation:glowPulse 3s infinite;
 }
+.dp.bounce{
+  animation:bounceOnce .8s ease,glowPulse 3s infinite;
+}
 .dp img{
   width:100%;
   height:100%;
@@ -78,9 +81,18 @@ h1{
   font-size:22px;
   min-height:56px;
   margin:10px 0 14px;
+  line-height:1.25;
 }
 
-/* Buttons area */
+/* Center */
+.center{
+  width:100%;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+}
+
+/* Buttons playground */
 .buttons{
   position:relative;
   width:100%;
@@ -106,8 +118,6 @@ button{
   color:#fff;
   transition:transform .2s ease, box-shadow .2s ease;
   box-shadow:0 0 12px rgba(255,77,109,.4);
-  position:relative;
-  z-index:2;
 }
 
 /* NO */
@@ -115,8 +125,6 @@ button{
   background:#eee;
   color:#333;
   transition:left .08s linear, top .08s linear;
-  position:absolute;
-  z-index:1;
 }
 
 /* JWM */
@@ -138,6 +146,7 @@ button{
   font-weight:600;
   color:#ff4d6d;
   background:#fff0f4;
+  display:inline-block;
   padding:8px 14px;
   border-radius:999px;
 }
@@ -158,19 +167,21 @@ canvas{
 
 <div class="card">
 
-  <div class="dp">
+  <div class="dp" id="dp">
     <img id="dpImg" src="./dp.gif" alt="DP">
   </div>
 
   <h1 id="question"></h1>
 
-  <div class="buttons" id="buttons">
-    <button id="yesBtn">Yes</button>
-    <button id="noBtn">No</button>
-  </div>
+  <div class="center">
+    <div class="buttons" id="buttons">
+      <button id="yesBtn">Yes</button>
+      <button id="noBtn">No</button>
+    </div>
 
-  <div class="jwm" id="jwm">
-    <img src="./jwm.gif" alt="Love">
+    <div class="jwm" id="jwm">
+      <img src="./jwm.gif" alt="Love">
+    </div>
   </div>
 
   <div class="hint" id="hint">No seems lil shy... 😁😈</div>
@@ -180,27 +191,29 @@ canvas{
 /* Typewriter */
 const text="Bubu will you be my valentine?";
 const q=document.getElementById("question");
-let i=0;
+let i=0, typingActive=true;
 (function type(){
+  if(!typingActive) return;
   if(i<text.length){
-    q.textContent+=text[i++];
+    q.innerHTML+=text.charAt(i++);
     setTimeout(type,70);
   }
 })();
 
-/* YES grows */
+/* YES grows slightly every hover */
 const yesBtn=document.getElementById("yesBtn");
-let yesScale=1;
-yesBtn.addEventListener("mouseenter",()=>{
-  yesScale=Math.min(yesScale+0.03,1.25);
-  yesBtn.style.transform=`scale(${yesScale})`;
-});
-yesBtn.addEventListener("touchstart",()=>{
-  yesScale=Math.min(yesScale+0.03,1.25);
-  yesBtn.style.transform=`scale(${yesScale})`;
-});
+let yesScale = 1;
 
-/* NO movement — collision-safe */
+function growYes(){
+  yesScale = Math.min(yesScale + 0.03, 1.25); // cap growth
+  yesBtn.style.transform = `scale(${yesScale})`;
+  yesBtn.style.boxShadow = `0 0 ${12 + yesScale*10}px rgba(255,77,109,.8)`;
+}
+
+yesBtn.addEventListener("mouseenter", growYes);
+yesBtn.addEventListener("touchstart", growYes);
+
+/* NO button — fast & far */
 const noBtn=document.getElementById("noBtn");
 const buttons=document.getElementById("buttons");
 let moving=false;
@@ -209,42 +222,23 @@ function moveNo(){
   if(moving) return;
   moving=true;
 
-  const c=buttons.getBoundingClientRect();
-  const y=yesBtn.getBoundingClientRect();
-  const pad=20, buffer=40;
+  const r = buttons.getBoundingClientRect();
+  const pad = 20;
 
-  let x,yPos,tries=0,ok=false;
+  noBtn.style.position="absolute";
 
-  while(!ok && tries<20){
-    x=Math.random()*(c.width-noBtn.offsetWidth-pad*2)+pad;
-    yPos=Math.random()*(c.height-noBtn.offsetHeight-pad*2)+pad;
+  const maxX = r.width - noBtn.offsetWidth - pad;
+  const maxY = r.height - noBtn.offsetHeight - pad;
 
-    const l=c.left+x, t=c.top+yPos;
-    const r=l+noBtn.offsetWidth, b=t+noBtn.offsetHeight;
+  noBtn.style.left = Math.random()*maxX + pad + "px";
+  noBtn.style.top  = Math.random()*maxY + pad + "px";
 
-    ok =
-      r < y.left-buffer ||
-      l > y.right+buffer ||
-      b < y.top-buffer ||
-      t > y.bottom+buffer;
-
-    tries++;
-  }
-
-  if(!ok){
-    x = Math.random()>0.5 ? pad : c.width-noBtn.offsetWidth-pad;
-    yPos = Math.random()>0.5 ? pad : c.height-noBtn.offsetHeight-pad;
-  }
-
-  noBtn.style.left=x+"px";
-  noBtn.style.top=yPos+"px";
-
-  setTimeout(()=>moving=false,60);
+  setTimeout(()=>moving=false,50);
 }
 
-noBtn.addEventListener("mouseover",moveNo);
-noBtn.addEventListener("mousemove",moveNo);
-noBtn.addEventListener("touchstart",moveNo);
+noBtn.addEventListener("mouseover", moveNo);
+noBtn.addEventListener("mousemove", moveNo);
+noBtn.addEventListener("touchstart", moveNo);
 
 /* Hearts */
 const canvas=document.getElementById("hearts");
@@ -268,10 +262,10 @@ function drawHeart(x,y,s,a){
   ctx.fill();
   ctx.restore();
 }
-(function animate(){
+function animate(){
   ctx.clearRect(0,0,canvas.width,canvas.height);
-  if(raining&&Math.random()<.25){
-    hearts.push({x:Math.random()*canvas.width,y:-20,s:12+Math.random()*10,v:1+Math.random()*1.5,d:Math.random()-.5,a:1});
+  if(raining && Math.random()<.25){
+    hearts.push({x:Math.random()*canvas.width,y:-20,s:12+Math.random()*10,v:1+Math.random()*1.5,d:Math.random()-0.5,a:1});
   }
   hearts.forEach(h=>{
     h.y+=h.v; h.x+=h.d; h.a-=.003;
@@ -279,11 +273,13 @@ function drawHeart(x,y,s,a){
   });
   hearts=hearts.filter(h=>h.a>0);
   requestAnimationFrame(animate);
-})();
+}
+animate();
 
 /* YES click */
 yesBtn.onclick=()=>{
-  q.textContent="YAY 💖 It’s a date!";
+  typingActive=false;
+  q.innerText="YAY 💖 It’s a date!  Best Decision Everrrrr...!!!!";
   document.getElementById("dpImg").src="./kiss.gif";
   buttons.style.display="none";
   document.getElementById("hint").style.display="none";
@@ -291,7 +287,7 @@ yesBtn.onclick=()=>{
   raining=true;
 
   setTimeout(()=>{
-    window.location.href=
+    window.location.href =
       "https://api.whatsapp.com/send?phone=919788480008&text=I%20tried%20to%20say%20no...%20but%20YES%20%F0%9F%98%82%E2%9D%A4%EF%B8%8F";
   },10000);
 };
