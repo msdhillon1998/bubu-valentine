@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
+<meta charset="UTF-8">
 <title>Bubu 💖 Valentine</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <style>
 *{
@@ -21,39 +21,34 @@ body{
   overflow:hidden;
 }
 
-/* 💓 Heartbeat */
+/* Animations */
 @keyframes heartbeat{
   0%,40%,100%{transform:scale(1)}
   25%{transform:scale(1.03)}
   60%{transform:scale(1.05)}
 }
-
-/* ✨ Glow */
 @keyframes glowPulse{
   0%{box-shadow:0 0 0 4px rgba(255,77,109,.25),0 0 18px rgba(255,77,109,.5)}
-  60%{box-shadow:0 0 0 9px rgba(255,77,109,.35),0 0 32px rgba(255,77,109,.9)}
+  60%{box-shadow:0 0 0 10px rgba(255,77,109,.35),0 0 36px rgba(255,77,109,.9)}
   100%{box-shadow:0 0 0 4px rgba(255,77,109,.25),0 0 18px rgba(255,77,109,.5)}
 }
-
-/* 🐻 Bounce */
 @keyframes bounceOnce{
   0%{transform:scale(1)}
   35%{transform:scale(1.1) translateY(-10px)}
   60%{transform:scale(.95)}
   100%{transform:scale(1)}
 }
-
-/* 😘 Fade-in */
 @keyframes fadeIn{
-  from{opacity:0;transform:scale(.9)}
+  from{opacity:0;transform:scale(.95)}
   to{opacity:1;transform:scale(1)}
 }
 
+/* Card */
 .card{
   background:#fff;
-  width:90%;
-  max-width:420px;
-  padding:32px 18px 44px;
+  width:92%;
+  max-width:460px;
+  padding:32px 16px 44px;
   border-radius:20px;
   text-align:center;
   animation:heartbeat 2.6s infinite;
@@ -85,16 +80,16 @@ body{
 h1{
   font-size:24px;
   min-height:64px;
-  margin-bottom:22px;
+  margin-bottom:14px;
 }
 
-/* Center area */
+/* CENTER AREA — FULL WIDTH */
 .center{
-  min-height:150px;
+  width:100%;
+  min-height:260px;
   display:flex;
   justify-content:center;
   align-items:center;
-  flex-direction:column;
 }
 
 /* Buttons */
@@ -113,25 +108,25 @@ button{
 #yesBtn{background:#ff4d6d;color:#fff}
 #noBtn{background:#eee;color:#333}
 
-/* JWM GIF */
+/* JWM — BIG, NO LIMITS */
 .jwm{
   display:none;
+  width:100%;
   animation:fadeIn .5s ease forwards;
 }
 .jwm img{
-  width:170px;
-  max-width:75vw;
+  width:100%;
   height:auto;
 }
 
 /* Hint */
 .hint{
-  margin-top:20px;
+  margin-top:18px;
   font-size:13px;
   color:#666;
 }
 
-/* Hearts */
+/* Hearts canvas */
 canvas{
   position:fixed;
   inset:0;
@@ -143,7 +138,6 @@ canvas{
 @media(max-width:480px){
   .dp{width:95px;height:95px}
   h1{font-size:21px}
-  .jwm img{width:145px}
 }
 </style>
 </head>
@@ -154,7 +148,6 @@ canvas{
 
 <div class="card">
 
-  <!-- DP -->
   <div class="dp" id="dp">
     <img id="dpImg" src="./dp.gif" alt="DP">
   </div>
@@ -176,7 +169,7 @@ canvas{
 </div>
 
 <script>
-/* TYPEWRITER (STOPPABLE) */
+/* TYPEWRITER */
 const text="Bubu will you be my valentine?";
 const q=document.getElementById("question");
 let i=0, typingActive=true;
@@ -222,10 +215,9 @@ function drawHeart(x,y,s,a){
   ctx.fill();
   ctx.restore();
 }
-
 function animate(){
   ctx.clearRect(0,0,canvas.width,canvas.height);
-  if(raining && Math.random()<.25){
+  if(raining&&Math.random()<.25){
     hearts.push({x:Math.random()*canvas.width,y:-20,s:12+Math.random()*10,v:1+Math.random()*1.5,d:Math.random()-0.5,a:1});
   }
   hearts.forEach(h=>{
@@ -248,28 +240,21 @@ yesBtn.onclick=()=>{
   typingActive=false;
   q.innerText="YAY 💖 It’s a date!";
 
-  // Change DP
   dpImg.src="./kiss.gif";
-
-  // Hide buttons + hint
   buttons.style.display="none";
   hint.style.display="none";
 
-  // Show big jwm.gif
   jwm.style.display="block";
   raining=true;
 
-  // DP bounce
   dp.classList.remove("bounce");
   void dp.offsetWidth;
   dp.classList.add("bounce");
 
-  // 📱 WhatsApp redirect after 3s
   setTimeout(()=>{
-    const msg = encodeURIComponent("I said YES 💖😊");
-    window.location.href =
-      "https://wa.me/919788480008?text=" + msg;
-  }, 3000);
+    const msg=encodeURIComponent("I tried to say no… but YES 😂❤️");
+    window.location.href="https://wa.me/919788480008?text="+msg;
+  },3000);
 };
 
 onresize=()=>{
@@ -278,7 +263,5 @@ onresize=()=>{
 };
 </script>
 
-
 </body>
 </html>
-
