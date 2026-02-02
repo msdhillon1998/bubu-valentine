@@ -13,7 +13,7 @@
 
 body{
   margin:0;
-  height:100vh;
+  min-height:100vh;
   background:linear-gradient(135deg,#f8cdda,#fbc2eb);
   display:flex;
   align-items:center;
@@ -29,50 +29,46 @@ body{
 }
 @keyframes glowPulse{
   0%{box-shadow:0 0 0 4px rgba(255,77,109,.25),0 0 18px rgba(255,77,109,.5)}
-  60%{box-shadow:0 0 0 10px rgba(255,77,109,.35),0 0 36px rgba(255,77,109,.9)}
+  60%{box-shadow:0 0 0 8px rgba(255,77,109,.35),0 0 28px rgba(255,77,109,.9)}
   100%{box-shadow:0 0 0 4px rgba(255,77,109,.25),0 0 18px rgba(255,77,109,.5)}
 }
 @keyframes bounceOnce{
   0%{transform:scale(1)}
-  35%{transform:scale(1.1) translateY(-10px)}
-  60%{transform:scale(.95)}
+  35%{transform:scale(1.08) translateY(-8px)}
+  60%{transform:scale(.97)}
   100%{transform:scale(1)}
 }
 @keyframes fadeIn{
-  from{opacity:0;transform:scale(.95)}
+  from{opacity:0;transform:scale(.96)}
   to{opacity:1;transform:scale(1)}
-}
-@keyframes hintPulse{
-  0%,100%{transform:scale(1)}
-  50%{transform:scale(1.06)}
 }
 
 /* Card */
 .card{
   background:#fff;
   width:92%;
-  max-width:460px;
-  padding:32px 16px 44px;
-  border-radius:20px;
+  max-width:420px;
+  padding:26px 16px 32px;
+  border-radius:18px;
   text-align:center;
-  animation:heartbeat 2.6s infinite;
-  box-shadow:0 20px 40px rgba(0,0,0,.15);
+  animation:heartbeat 3s infinite;
+  box-shadow:0 16px 32px rgba(0,0,0,.15);
   position:relative;
   z-index:2;
 }
 
 /* DP */
 .dp{
-  width:120px;
-  height:120px;
-  margin:0 auto 14px;
+  width:110px;
+  height:110px;
+  margin:0 auto 12px;
   border-radius:50%;
   overflow:hidden;
   border:4px solid #ff4d6d;
-  animation:glowPulse 2.6s infinite;
+  animation:glowPulse 3s infinite;
 }
 .dp.bounce{
-  animation:bounceOnce .8s ease,glowPulse 2.6s infinite;
+  animation:bounceOnce .8s ease,glowPulse 3s infinite;
 }
 .dp img{
   width:100%;
@@ -82,15 +78,15 @@ body{
 
 /* Text */
 h1{
-  font-size:24px;
-  min-height:64px;
-  margin-bottom:14px;
+  font-size:22px;
+  min-height:56px;
+  margin:10px 0 14px;
+  line-height:1.25;
 }
 
 /* Center */
 .center{
   width:100%;
-  min-height:260px;
   display:flex;
   justify-content:center;
   align-items:center;
@@ -100,17 +96,18 @@ h1{
 .buttons{
   position:relative;
   display:flex;
-  gap:24px;
+  gap:20px;
   justify-content:center;
   align-items:center;
   width:100%;
+  margin-top:6px;
 }
 button{
-  min-width:96px;
-  height:48px;
+  min-width:92px;
+  height:44px;
   border-radius:999px;
   border:none;
-  font-size:16px;
+  font-size:15px;
   cursor:pointer;
 }
 #yesBtn{background:#ff4d6d;color:#fff}
@@ -124,6 +121,7 @@ button{
 .jwm{
   display:none;
   width:100%;
+  margin-top:6px;
   animation:fadeIn .5s ease forwards;
 }
 .jwm img{
@@ -131,18 +129,16 @@ button{
   height:auto;
 }
 
-/* 🔥 Highlighted Hint */
+/* Highlighted Hint (balanced for mobile) */
 .hint{
-  margin-top:22px;
-  font-size:16px;                 /* BIGGER */
+  margin-top:14px;
+  font-size:14px;
   font-weight:600;
   color:#ff4d6d;
   background:#fff0f4;
   display:inline-block;
-  padding:10px 18px;
+  padding:8px 14px;
   border-radius:999px;
-  box-shadow:0 4px 12px rgba(255,77,109,.25);
-  animation:hintPulse 1.8s infinite;
 }
 
 /* Hearts */
@@ -153,10 +149,10 @@ canvas{
   z-index:1;
 }
 
-/* Mobile */
-@media(max-width:480px){
-  .dp{width:95px;height:95px}
-  h1{font-size:21px}
+/* Larger screens */
+@media(min-width:600px){
+  h1{font-size:24px}
+  .dp{width:120px;height:120px}
   .hint{font-size:15px}
 }
 </style>
@@ -201,7 +197,7 @@ let i=0, typingActive=true;
   }
 })();
 
-/* NO dodge (fixed) */
+/* NO dodge */
 const noBtn=document.getElementById("noBtn");
 const buttons=document.getElementById("buttons");
 function moveNo(){
@@ -270,8 +266,10 @@ yesBtn.onclick=()=>{
   dp.classList.add("bounce");
 
   setTimeout(()=>{
-    const msg=encodeURIComponent("I tried to say no... but YES 😂❤️");
-    window.location.href="https://wa.me/919788480008?text="+msg;
+    const msg = "I%20tried%20to%20say%20no...%20but%20YES%20%F0%9F%98%82%E2%9D%A4%EF%B8%8F";
+window.location.href = "https://wa.me/919788480008?text=" + msg;
+
+  
   },3000);
 };
 
