@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
+<meta charset="UTF-8" />
 <title>Bubu 💖 Valentine</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
 <style>
 *{
@@ -82,6 +82,7 @@ body{
   object-fit:contain;
 }
 
+/* 💌 Text */
 h1{
   font-size:24px;
   min-height:64px;
@@ -96,31 +97,43 @@ h1{
   justify-content:center;
   gap:28px;
 }
+
+/* force equal size */
 button{
-  padding:14px 26px;
+  min-width:96px;
+  height:48px;
+  padding:0;
   border-radius:999px;
   border:none;
   font-size:16px;
   cursor:pointer;
+  display:flex;
+  align-items:center;
+  justify-content:center;
 }
+
 #yesBtn{
   background:#ff4d6d;
   color:#fff;
 }
+
 #yesBtn.heart{
   width:56px;
+  min-width:56px;
   height:56px;
   padding:0;
   font-size:26px;
   border-radius:50%;
   animation:heartPop .5s ease;
 }
+
 #noBtn{
   background:#eee;
   color:#333;
   position:absolute;
   left:50%;
   transform:translateX(60px);
+  opacity:.95;
 }
 
 .hint{
@@ -141,7 +154,7 @@ canvas{
 @media(max-width:480px){
   .dp{width:95px;height:95px}
   h1{font-size:21px}
-  button{font-size:15px;padding:12px 22px}
+  button{min-width:88px;height:44px;font-size:15px}
 }
 </style>
 </head>
@@ -152,9 +165,9 @@ canvas{
 
 <div class="card">
 
-  <!-- 🐻🐼 DP IMAGE URL -->
+  <!-- 🐻🐼 DP (self-hosted for GitHub Pages) -->
   <div class="dp" id="dp">
-    <img src="./dp.gif" alt="Dudu Bubu Love">
+    <img src="./dp.gif" alt="Dudu Bubu Love" />
   </div>
 
   <h1 id="question"></h1>
@@ -169,40 +182,43 @@ canvas{
 
 <script>
 /* 💌 Typewriter */
-const text="Bubu will you be my valentine?";
-const q=document.getElementById("question");
-let i=0;
+const text = "Bubu will you be my valentine?";
+const q = document.getElementById("question");
+let i = 0;
 (function type(){
-  if(i<text.length){
-    q.innerHTML+=text.charAt(i++);
-    setTimeout(type,70);
+  if(i < text.length){
+    q.innerHTML += text.charAt(i++);
+    setTimeout(type, 70);
   }
 })();
 
-/* 😈 No button dodge (desktop + mobile) */
-const noBtn=document.getElementById("noBtn");
-const card=document.querySelector(".card");
+/* 😈 NO button dodge (desktop + mobile) */
+const noBtn = document.getElementById("noBtn");
+const card = document.querySelector(".card");
 function moveNo(){
-  const r=card.getBoundingClientRect();
-  noBtn.style.left=Math.random()*(r.width-80)+"px";
-  noBtn.style.top=Math.random()*(r.height-80)+"px";
+  const r = card.getBoundingClientRect();
+  noBtn.style.left = Math.random()*(r.width-96) + "px";
+  noBtn.style.top  = Math.random()*(r.height-96) + "px";
 }
-noBtn.addEventListener("mouseenter",moveNo);
-noBtn.addEventListener("touchstart",moveNo);
+noBtn.addEventListener("mouseenter", moveNo);
+noBtn.addEventListener("touchstart", moveNo);
 
-/* 💖 Heart rain (REAL hearts) */
-const canvas=document.getElementById("hearts");
-const ctx=canvas.getContext("2d");
-canvas.width=innerWidth;
-canvas.height=innerHeight;
-let hearts=[],raining=false;
+/* 💖 Falling hearts (real heart shapes) */
+const canvas = document.getElementById("hearts");
+const ctx = canvas.getContext("2d");
+canvas.width = innerWidth;
+canvas.height = innerHeight;
+
+let hearts = [];
+let raining = false;
 
 function drawHeart(x,y,size,alpha){
   ctx.save();
   ctx.translate(x,y);
-  ctx.scale(size/20,size/20);
-  ctx.globalAlpha=alpha;
-  ctx.fillStyle="#ff4d6d";
+  ctx.scale(size/20, size/20);
+  ctx.globalAlpha = alpha;
+  ctx.fillStyle = "#ff4d6d";
+
   ctx.beginPath();
   ctx.moveTo(0,6);
   ctx.bezierCurveTo(0,0,-10,0,-10,6);
@@ -210,57 +226,60 @@ function drawHeart(x,y,size,alpha){
   ctx.bezierCurveTo(0,18,10,14,10,6);
   ctx.bezierCurveTo(10,0,0,0,0,6);
   ctx.fill();
+
   ctx.restore();
 }
 
 function animate(){
   ctx.clearRect(0,0,canvas.width,canvas.height);
-  if(raining && Math.random()<.25){
+
+  if(raining && Math.random() < 0.25){
     hearts.push({
-      x:Math.random()*canvas.width,
-      y:-20,
-      size:12+Math.random()*10,
-      speed:1+Math.random()*1.5,
-      drift:Math.random()-0.5,
-      alpha:1
+      x: Math.random()*canvas.width,
+      y: -20,
+      size: 12 + Math.random()*10,
+      speed: 1 + Math.random()*1.5,
+      drift: Math.random() - 0.5,
+      alpha: 1
     });
   }
+
   hearts.forEach(h=>{
-    h.y+=h.speed;
-    h.x+=h.drift;
-    h.alpha-=.003;
-    drawHeart(h.x,h.y,h.size,h.alpha);
+    h.y += h.speed;
+    h.x += h.drift;
+    h.alpha -= 0.003;
+    drawHeart(h.x, h.y, h.size, h.alpha);
   });
-  hearts=hearts.filter(h=>h.alpha>0);
+
+  hearts = hearts.filter(h => h.alpha > 0);
   requestAnimationFrame(animate);
 }
 animate();
 
-/* ❤️ YES click */
-const yesBtn=document.getElementById("yesBtn");
-const dp=document.getElementById("dp");
-const hint=document.getElementById("hint");
+/* ❤️ YES action */
+const yesBtn = document.getElementById("yesBtn");
+const dp = document.getElementById("dp");
+const hint = document.getElementById("hint");
 
-yesBtn.onclick=()=>{
-  q.innerText="YAY 💖 It’s a date!";
-  noBtn.style.display="none";
-  hint.style.display="none";
-  raining=true;
+yesBtn.onclick = () => {
+  q.innerText = "YAY 💖 It’s a date!";
+  noBtn.style.display = "none";
+  hint.style.display = "none";
+  raining = true;
 
   yesBtn.classList.add("heart");
-  yesBtn.innerText="❤";
+  yesBtn.innerText = "❤";
 
   dp.classList.remove("bounce");
   void dp.offsetWidth;
   dp.classList.add("bounce");
 };
 
-onresize=()=>{
-  canvas.width=innerWidth;
-  canvas.height=innerHeight;
+onresize = () => {
+  canvas.width = innerWidth;
+  canvas.height = innerHeight;
 };
 </script>
 
 </body>
 </html>
-
