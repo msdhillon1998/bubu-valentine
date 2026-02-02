@@ -42,6 +42,10 @@ body{
   from{opacity:0;transform:scale(.96)}
   to{opacity:1;transform:scale(1)}
 }
+@keyframes yesWiggle{
+  0%,100%{transform:scale(1)}
+  50%{transform:scale(1.1)}
+}
 
 /* Card */
 .card{
@@ -92,11 +96,11 @@ h1{
   align-items:center;
 }
 
-/* Buttons playground */
+/* Buttons playground (BIGGER AREA) */
 .buttons{
   position:relative;
   width:100%;
-  min-height:140px;
+  min-height:220px;   /* 🔥 BIGGER */
   display:flex;
   justify-content:center;
   align-items:center;
@@ -112,15 +116,28 @@ button{
   cursor:pointer;
 }
 
+/* YES */
 #yesBtn{
   background:#ff4d6d;
   color:#fff;
+  transition:transform .2s ease, box-shadow .2s ease;
+}
+#yesBtn:hover{
+  animation:yesWiggle .6s ease;
+  box-shadow:0 0 18px rgba(255,77,109,.7);
+}
+#yesBtn:active,
+#yesBtn:focus{
+  transform:scale(1.05);
+  box-shadow:0 0 22px rgba(255,77,109,.9);
+  outline:none;
 }
 
+/* NO — FAST */
 #noBtn{
   background:#eee;
   color:#333;
-  transition:left .15s ease, top .15s ease;
+  transition:left .08s linear, top .08s linear; /* 🔥 faster */
 }
 
 /* JWM */
@@ -196,7 +213,7 @@ let i=0, typingActive=true;
   }
 })();
 
-/* NO button dodge — FIXED */
+/* NO button — FAST & FAR */
 const noBtn=document.getElementById("noBtn");
 const buttons=document.getElementById("buttons");
 let moving=false;
@@ -206,15 +223,17 @@ function moveNo(){
   moving=true;
 
   const r = buttons.getBoundingClientRect();
+  const pad = 20; /* keep away from edges */
+
   noBtn.style.position="absolute";
 
-  const maxX = r.width - noBtn.offsetWidth;
-  const maxY = r.height - noBtn.offsetHeight;
+  const maxX = r.width - noBtn.offsetWidth - pad;
+  const maxY = r.height - noBtn.offsetHeight - pad;
 
-  noBtn.style.left = Math.random()*maxX + "px";
-  noBtn.style.top  = Math.random()*maxY + "px";
+  noBtn.style.left = Math.random()*maxX + pad + "px";
+  noBtn.style.top  = Math.random()*maxY + pad + "px";
 
-  setTimeout(()=>moving=false,120);
+  setTimeout(()=>moving=false,50); /* 🔥 faster */
 }
 
 noBtn.addEventListener("mouseover", moveNo);
@@ -243,7 +262,6 @@ function drawHeart(x,y,s,a){
   ctx.fill();
   ctx.restore();
 }
-
 function animate(){
   ctx.clearRect(0,0,canvas.width,canvas.height);
   if(raining && Math.random()<.25){
