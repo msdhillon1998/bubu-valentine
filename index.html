@@ -43,9 +43,9 @@ body{
   100%{transform:scale(1)}
 }
 
-/* 😘 Kiss */
-@keyframes kissFade{
-  from{opacity:0;transform:scale(.85)}
+/* 😘 Fade-in */
+@keyframes fadeIn{
+  from{opacity:0;transform:scale(.9)}
   to{opacity:1;transform:scale(1)}
 }
 
@@ -81,23 +81,27 @@ body{
   object-fit:contain;
 }
 
+/* Text */
 h1{
   font-size:24px;
   min-height:64px;
   margin-bottom:22px;
 }
 
-/* BUTTON ZONE */
-.buttons{
-  position:relative;
-  min-height:140px;
+/* Center area */
+.center{
+  min-height:150px;
   display:flex;
   justify-content:center;
   align-items:center;
-  gap:24px;
+  flex-direction:column;
 }
 
 /* Buttons */
+.buttons{
+  display:flex;
+  gap:24px;
+}
 button{
   min-width:96px;
   height:48px;
@@ -105,34 +109,24 @@ button{
   border:none;
   font-size:16px;
   cursor:pointer;
-  display:flex;
-  align-items:center;
-  justify-content:center;
 }
+#yesBtn{background:#ff4d6d;color:#fff}
+#noBtn{background:#eee;color:#333}
 
-#yesBtn{
-  background:#ff4d6d;
-  color:#fff;
-}
-
-#noBtn{
-  background:#eee;
-  color:#333;
-}
-
-/* Kiss */
-.kiss{
+/* JWM GIF */
+.jwm{
   display:none;
-  animation:kissFade .5s ease forwards;
+  animation:fadeIn .5s ease forwards;
 }
-.kiss img{
+.jwm img{
   width:170px;
   max-width:75vw;
   height:auto;
 }
 
+/* Hint */
 .hint{
-  margin-top:26px;
+  margin-top:20px;
   font-size:13px;
   color:#666;
 }
@@ -145,11 +139,11 @@ canvas{
   z-index:1;
 }
 
+/* Mobile */
 @media(max-width:480px){
   .dp{width:95px;height:95px}
   h1{font-size:21px}
-  button{min-width:88px;height:44px;font-size:15px}
-  .kiss img{width:145px}
+  .jwm img{width:145px}
 }
 </style>
 </head>
@@ -160,18 +154,21 @@ canvas{
 
 <div class="card">
 
+  <!-- DP -->
   <div class="dp" id="dp">
-    <img src="./dp.gif" alt="Dudu Bubu Love">
+    <img id="dpImg" src="./dp.gif" alt="DP">
   </div>
 
   <h1 id="question"></h1>
 
-  <div class="buttons" id="btnArea">
-    <button id="yesBtn">Yes</button>
-    <button id="noBtn">No</button>
+  <div class="center">
+    <div class="buttons" id="buttons">
+      <button id="yesBtn">Yes</button>
+      <button id="noBtn">No</button>
+    </div>
 
-    <div class="kiss" id="kiss">
-      <img src="./kiss.gif" alt="Kiss">
+    <div class="jwm" id="jwm">
+      <img src="./jwm.gif" alt="Love">
     </div>
   </div>
 
@@ -183,7 +180,6 @@ canvas{
 const text="Bubu will you be my valentine?";
 const q=document.getElementById("question");
 let i=0, typingActive=true;
-
 (function type(){
   if(!typingActive) return;
   if(i<text.length){
@@ -194,17 +190,15 @@ let i=0, typingActive=true;
 
 /* NO DODGE */
 const noBtn=document.getElementById("noBtn");
-const area=document.getElementById("btnArea");
-
+const buttons=document.getElementById("buttons");
+noBtn.addEventListener("mouseenter",moveNo);
+noBtn.addEventListener("touchstart",moveNo);
 function moveNo(){
   noBtn.style.position="absolute";
-  const r=area.getBoundingClientRect();
+  const r=buttons.getBoundingClientRect();
   noBtn.style.left=Math.random()*(r.width-96)+"px";
   noBtn.style.top=Math.random()*(r.height-48)+"px";
 }
-
-noBtn.addEventListener("mouseenter",moveNo);
-noBtn.addEventListener("touchstart",moveNo);
 
 /* HEARTS */
 const canvas=document.getElementById("hearts");
@@ -243,19 +237,26 @@ function animate(){
 }
 animate();
 
-/* YES */
+/* YES ACTION */
 const yesBtn=document.getElementById("yesBtn");
 const dp=document.getElementById("dp");
+const dpImg=document.getElementById("dpImg");
 const hint=document.getElementById("hint");
-const kiss=document.getElementById("kiss");
+const jwm=document.getElementById("jwm");
 
 yesBtn.onclick=()=>{
   typingActive=false;
   q.innerText="YAY 💖 It’s a date!";
-  yesBtn.style.display="none";
-  noBtn.style.display="none";
+
+  // Change DP to kiss.gif
+  dpImg.src="./kiss.gif";
+
+  // Hide buttons + hint
+  document.getElementById("buttons").style.display="none";
   hint.style.display="none";
-  kiss.style.display="block";
+
+  // Show jwm.gif in center
+  jwm.style.display="block";
   raining=true;
 
   dp.classList.remove("bounce");
