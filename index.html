@@ -96,7 +96,7 @@ h1{
 .buttons{
   position:relative;
   width:100%;
-  min-height:140px;       /* 🔑 gives NO vertical space */
+  min-height:140px;
   display:flex;
   justify-content:center;
   align-items:center;
@@ -180,7 +180,7 @@ canvas{
     </div>
   </div>
 
-  <div class="hint" id="hint">No seems lil shy...!!😁😈</div>
+  <div class="hint" id="hint">No seems lil shy... 😁😈</div>
 </div>
 
 <script>
@@ -196,11 +196,15 @@ let i=0, typingActive=true;
   }
 })();
 
-/* NO button movement (2D, fixed) */
+/* NO button dodge — FIXED */
 const noBtn=document.getElementById("noBtn");
 const buttons=document.getElementById("buttons");
+let moving=false;
 
 function moveNo(){
+  if(moving) return;
+  moving=true;
+
   const r = buttons.getBoundingClientRect();
   noBtn.style.position="absolute";
 
@@ -209,9 +213,12 @@ function moveNo(){
 
   noBtn.style.left = Math.random()*maxX + "px";
   noBtn.style.top  = Math.random()*maxY + "px";
+
+  setTimeout(()=>moving=false,120);
 }
 
-noBtn.addEventListener("mouseenter", moveNo);
+noBtn.addEventListener("mouseover", moveNo);
+noBtn.addEventListener("mousemove", moveNo);
 noBtn.addEventListener("touchstart", moveNo);
 
 /* Hearts */
@@ -236,13 +243,14 @@ function drawHeart(x,y,s,a){
   ctx.fill();
   ctx.restore();
 }
+
 function animate(){
   ctx.clearRect(0,0,canvas.width,canvas.height);
-  if(raining&&Math.random()<.25){
+  if(raining && Math.random()<.25){
     hearts.push({x:Math.random()*canvas.width,y:-20,s:12+Math.random()*10,v:1+Math.random()*1.5,d:Math.random()-0.5,a:1});
   }
   hearts.forEach(h=>{
-    h.y+=h.v;h.x+=h.d;h.a-=.003;
+    h.y+=h.v; h.x+=h.d; h.a-=.003;
     drawHeart(h.x,h.y,h.s,h.a);
   });
   hearts=hearts.filter(h=>h.a>0);
@@ -250,7 +258,7 @@ function animate(){
 }
 animate();
 
-/* YES */
+/* YES + WhatsApp */
 const yesBtn=document.getElementById("yesBtn");
 const dp=document.getElementById("dp");
 const dpImg=document.getElementById("dpImg");
@@ -271,10 +279,8 @@ yesBtn.onclick=()=>{
   dp.classList.add("bounce");
 
   setTimeout(()=>{
-    const msg="I tried to say no… but YES 😂❤️";
-    window.location.href=
-      "https://api.whatsapp.com/send?phone=919788480008&text="+
-      encodeURIComponent(msg);
+    window.location.href =
+      "https://api.whatsapp.com/send?phone=919788480008&text=I%20tried%20to%20say%20no...%20but%20YES%20%F0%9F%98%82%E2%9D%A4%EF%B8%8F";
   },10000);
 };
 
@@ -286,7 +292,3 @@ onresize=()=>{
 
 </body>
 </html>
-
-
-
-
