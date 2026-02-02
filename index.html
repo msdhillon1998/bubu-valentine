@@ -42,10 +42,6 @@ body{
   from{opacity:0;transform:scale(.96)}
   to{opacity:1;transform:scale(1)}
 }
-@keyframes yesWiggle{
-  0%,100%{transform:scale(1)}
-  50%{transform:scale(1.1)}
-}
 
 /* Card */
 .card{
@@ -96,11 +92,11 @@ h1{
   align-items:center;
 }
 
-/* Buttons playground (BIGGER AREA) */
+/* Buttons playground */
 .buttons{
   position:relative;
   width:100%;
-  min-height:220px;   /* 🔥 BIGGER */
+  min-height:220px;
   display:flex;
   justify-content:center;
   align-items:center;
@@ -121,23 +117,14 @@ button{
   background:#ff4d6d;
   color:#fff;
   transition:transform .2s ease, box-shadow .2s ease;
-}
-#yesBtn:hover{
-  animation:yesWiggle .6s ease;
-  box-shadow:0 0 18px rgba(255,77,109,.7);
-}
-#yesBtn:active,
-#yesBtn:focus{
-  transform:scale(1.05);
-  box-shadow:0 0 22px rgba(255,77,109,.9);
-  outline:none;
+  box-shadow:0 0 12px rgba(255,77,109,.4);
 }
 
-/* NO — FAST */
+/* NO */
 #noBtn{
   background:#eee;
   color:#333;
-  transition:left .08s linear, top .08s linear; /* 🔥 faster */
+  transition:left .08s linear, top .08s linear;
 }
 
 /* JWM */
@@ -197,7 +184,7 @@ canvas{
     </div>
   </div>
 
-  <div class="hint" id="hint">No seems lil shy... 😁😈</div>
+  <div class="hint" id="hint">'No' seems a lil shy... 😁😈</div>
 </div>
 
 <script>
@@ -213,7 +200,20 @@ let i=0, typingActive=true;
   }
 })();
 
-/* NO button — FAST & FAR */
+/* YES grows slightly every hover */
+const yesBtn=document.getElementById("yesBtn");
+let yesScale = 1;
+
+function growYes(){
+  yesScale = Math.min(yesScale + 0.03, 1.25); // cap growth
+  yesBtn.style.transform = `scale(${yesScale})`;
+  yesBtn.style.boxShadow = `0 0 ${12 + yesScale*10}px rgba(255,77,109,.8)`;
+}
+
+yesBtn.addEventListener("mouseenter", growYes);
+yesBtn.addEventListener("touchstart", growYes);
+
+/* NO button — fast & far */
 const noBtn=document.getElementById("noBtn");
 const buttons=document.getElementById("buttons");
 let moving=false;
@@ -223,7 +223,7 @@ function moveNo(){
   moving=true;
 
   const r = buttons.getBoundingClientRect();
-  const pad = 20; /* keep away from edges */
+  const pad = 20;
 
   noBtn.style.position="absolute";
 
@@ -233,7 +233,7 @@ function moveNo(){
   noBtn.style.left = Math.random()*maxX + pad + "px";
   noBtn.style.top  = Math.random()*maxY + pad + "px";
 
-  setTimeout(()=>moving=false,50); /* 🔥 faster */
+  setTimeout(()=>moving=false,50);
 }
 
 noBtn.addEventListener("mouseover", moveNo);
@@ -276,25 +276,15 @@ function animate(){
 }
 animate();
 
-/* YES + WhatsApp */
-const yesBtn=document.getElementById("yesBtn");
-const dp=document.getElementById("dp");
-const dpImg=document.getElementById("dpImg");
-const hint=document.getElementById("hint");
-const jwm=document.getElementById("jwm");
-
+/* YES click */
 yesBtn.onclick=()=>{
   typingActive=false;
   q.innerText="YAY 💖 It’s a date!  Best Decision Everrrrr...!!!!";
-  dpImg.src="./kiss.gif";
+  document.getElementById("dpImg").src="./kiss.gif";
   buttons.style.display="none";
-  hint.style.display="none";
-  jwm.style.display="block";
+  document.getElementById("hint").style.display="none";
+  document.getElementById("jwm").style.display="block";
   raining=true;
-
-  dp.classList.remove("bounce");
-  void dp.offsetWidth;
-  dp.classList.add("bounce");
 
   setTimeout(()=>{
     window.location.href =
