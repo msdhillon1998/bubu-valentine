@@ -21,21 +21,21 @@ body{
   overflow:hidden;
 }
 
-/* 💓 Card heartbeat */
+/* 💓 Heartbeat */
 @keyframes heartbeat{
   0%,40%,100%{transform:scale(1)}
   25%{transform:scale(1.03)}
   60%{transform:scale(1.05)}
 }
 
-/* ✨ Glow ring */
+/* ✨ Glow */
 @keyframes glowPulse{
   0%{box-shadow:0 0 0 4px rgba(255,77,109,.25),0 0 18px rgba(255,77,109,.5)}
   60%{box-shadow:0 0 0 9px rgba(255,77,109,.35),0 0 32px rgba(255,77,109,.9)}
   100%{box-shadow:0 0 0 4px rgba(255,77,109,.25),0 0 18px rgba(255,77,109,.5)}
 }
 
-/* 🐻 DP bounce */
+/* 🐻 Bounce */
 @keyframes bounceOnce{
   0%{transform:scale(1)}
   35%{transform:scale(1.1) translateY(-10px)}
@@ -43,10 +43,10 @@ body{
   100%{transform:scale(1)}
 }
 
-/* 😘 Kiss fade-in */
+/* 😘 Kiss */
 @keyframes kissFade{
-  from{opacity:0; transform:scale(.85)}
-  to{opacity:1; transform:scale(1)}
+  from{opacity:0;transform:scale(.85)}
+  to{opacity:1;transform:scale(1)}
 }
 
 .card{
@@ -62,7 +62,7 @@ body{
   z-index:2;
 }
 
-/* 🐻 DP */
+/* DP */
 .dp{
   width:120px;
   height:120px;
@@ -81,25 +81,23 @@ body{
   object-fit:contain;
 }
 
-/* 💌 Text */
 h1{
   font-size:24px;
   min-height:64px;
   margin-bottom:22px;
-  transition:all .3s ease;
 }
 
-/* 🎀 Buttons / Kiss area */
+/* BUTTON ZONE */
 .buttons{
   position:relative;
   min-height:140px;
   display:flex;
   justify-content:center;
   align-items:center;
-  flex-direction:column;
+  gap:24px;
 }
 
-/* Equal buttons */
+/* Buttons */
 button{
   min-width:96px;
   height:48px;
@@ -120,13 +118,9 @@ button{
 #noBtn{
   background:#eee;
   color:#333;
-  position:absolute;
-  left:50%;
-  transform:translateX(60px);
-  opacity:.95;
 }
 
-/* 😘 Kiss GIF */
+/* Kiss */
 .kiss{
   display:none;
   animation:kissFade .5s ease forwards;
@@ -137,14 +131,13 @@ button{
   height:auto;
 }
 
-/* Hint */
 .hint{
   margin-top:26px;
   font-size:13px;
   color:#666;
 }
 
-/* 💖 Canvas */
+/* Hearts */
 canvas{
   position:fixed;
   inset:0;
@@ -152,7 +145,6 @@ canvas{
   z-index:1;
 }
 
-/* 📱 Mobile tweaks */
 @media(max-width:480px){
   .dp{width:95px;height:95px}
   h1{font-size:21px}
@@ -168,19 +160,18 @@ canvas{
 
 <div class="card">
 
-  <!-- 🐻 DP -->
   <div class="dp" id="dp">
-    <img src="./dp.gif" alt="Dudu Bubu Love" />
+    <img src="./dp.gif" alt="Dudu Bubu Love">
   </div>
 
   <h1 id="question"></h1>
 
-  <div class="buttons">
+  <div class="buttons" id="btnArea">
     <button id="yesBtn">Yes</button>
     <button id="noBtn">No</button>
 
     <div class="kiss" id="kiss">
-      <img src="./kiss.gif" alt="Kiss" />
+      <img src="./kiss.gif" alt="Kiss">
     </div>
   </div>
 
@@ -188,46 +179,46 @@ canvas{
 </div>
 
 <script>
-/* 💌 Typewriter (STOPPABLE) */
-const text = "Bubu will you be my valentine?";
-const q = document.getElementById("question");
-let i = 0;
-let typingActive = true;
+/* TYPEWRITER */
+const text="Bubu will you be my valentine?";
+const q=document.getElementById("question");
+let i=0, typingActive=true;
 
 (function type(){
   if(!typingActive) return;
-  if(i < text.length){
-    q.innerHTML += text.charAt(i++);
-    setTimeout(type, 70);
+  if(i<text.length){
+    q.innerHTML+=text.charAt(i++);
+    setTimeout(type,70);
   }
 })();
 
-/* 😈 NO dodge */
-const noBtn = document.getElementById("noBtn");
-const card = document.querySelector(".card");
+/* NO DODGE */
+const noBtn=document.getElementById("noBtn");
+const area=document.getElementById("btnArea");
+
 function moveNo(){
-  const r = card.getBoundingClientRect();
-  noBtn.style.left = Math.random()*(r.width-96) + "px";
-  noBtn.style.top  = Math.random()*(r.height-96) + "px";
+  noBtn.style.position="absolute";
+  const r=area.getBoundingClientRect();
+  noBtn.style.left=Math.random()*(r.width-96)+"px";
+  noBtn.style.top=Math.random()*(r.height-48)+"px";
 }
-noBtn.addEventListener("mouseenter", moveNo);
-noBtn.addEventListener("touchstart", moveNo);
 
-/* 💖 Heart rain */
-const canvas = document.getElementById("hearts");
-const ctx = canvas.getContext("2d");
-canvas.width = innerWidth;
-canvas.height = innerHeight;
+noBtn.addEventListener("mouseenter",moveNo);
+noBtn.addEventListener("touchstart",moveNo);
 
-let hearts = [];
-let raining = false;
+/* HEARTS */
+const canvas=document.getElementById("hearts");
+const ctx=canvas.getContext("2d");
+canvas.width=innerWidth;
+canvas.height=innerHeight;
+let hearts=[],raining=false;
 
-function drawHeart(x,y,size,alpha){
+function drawHeart(x,y,s,a){
   ctx.save();
   ctx.translate(x,y);
-  ctx.scale(size/20,size/20);
-  ctx.globalAlpha = alpha;
-  ctx.fillStyle = "#ff4d6d";
+  ctx.scale(s/20,s/20);
+  ctx.globalAlpha=a;
+  ctx.fillStyle="#ff4d6d";
   ctx.beginPath();
   ctx.moveTo(0,6);
   ctx.bezierCurveTo(0,0,-10,0,-10,6);
@@ -240,52 +231,41 @@ function drawHeart(x,y,size,alpha){
 
 function animate(){
   ctx.clearRect(0,0,canvas.width,canvas.height);
-  if(raining && Math.random()<.25){
-    hearts.push({
-      x:Math.random()*canvas.width,
-      y:-20,
-      size:12+Math.random()*10,
-      speed:1+Math.random()*1.5,
-      drift:Math.random()-0.5,
-      alpha:1
-    });
+  if(raining&&Math.random()<.25){
+    hearts.push({x:Math.random()*canvas.width,y:-20,s:12+Math.random()*10,v:1+Math.random()*1.5,d:Math.random()-0.5,a:1});
   }
   hearts.forEach(h=>{
-    h.y+=h.speed;
-    h.x+=h.drift;
-    h.alpha-=.003;
-    drawHeart(h.x,h.y,h.size,h.alpha);
+    h.y+=h.v;h.x+=h.d;h.a-=.003;
+    drawHeart(h.x,h.y,h.s,h.a);
   });
-  hearts=hearts.filter(h=>h.alpha>0);
+  hearts=hearts.filter(h=>h.a>0);
   requestAnimationFrame(animate);
 }
 animate();
 
-/* ❤️ YES → KISS */
-const yesBtn = document.getElementById("yesBtn");
-const dp = document.getElementById("dp");
-const hint = document.getElementById("hint");
-const kiss = document.getElementById("kiss");
+/* YES */
+const yesBtn=document.getElementById("yesBtn");
+const dp=document.getElementById("dp");
+const hint=document.getElementById("hint");
+const kiss=document.getElementById("kiss");
 
-yesBtn.onclick = () => {
-  typingActive = false;
-  q.innerText = "YAY 💖 It’s a date!";
-
-  yesBtn.style.display = "none";
-  noBtn.style.display = "none";
-  hint.style.display = "none";
-
-  kiss.style.display = "block";
-  raining = true;
+yesBtn.onclick=()=>{
+  typingActive=false;
+  q.innerText="YAY 💖 It’s a date!";
+  yesBtn.style.display="none";
+  noBtn.style.display="none";
+  hint.style.display="none";
+  kiss.style.display="block";
+  raining=true;
 
   dp.classList.remove("bounce");
   void dp.offsetWidth;
   dp.classList.add("bounce");
 };
 
-onresize = () => {
-  canvas.width = innerWidth;
-  canvas.height = innerHeight;
+onresize=()=>{
+  canvas.width=innerWidth;
+  canvas.height=innerHeight;
 };
 </script>
 
