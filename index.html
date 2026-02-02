@@ -92,16 +92,17 @@ h1{
   align-items:center;
 }
 
-/* Buttons */
+/* Buttons playground */
 .buttons{
   position:relative;
+  width:100%;
+  min-height:140px;       /* 🔑 gives NO vertical space */
   display:flex;
-  gap:20px;
   justify-content:center;
   align-items:center;
-  width:100%;
-  margin-top:6px;
+  gap:20px;
 }
+
 button{
   min-width:92px;
   height:44px;
@@ -110,14 +111,19 @@ button{
   font-size:15px;
   cursor:pointer;
 }
-#yesBtn{background:#ff4d6d;color:#fff}
+
+#yesBtn{
+  background:#ff4d6d;
+  color:#fff;
+}
+
 #noBtn{
   background:#eee;
   color:#333;
   transition:left .15s ease, top .15s ease;
 }
 
-/* BIG JWM */
+/* JWM */
 .jwm{
   display:none;
   width:100%;
@@ -129,7 +135,7 @@ button{
   height:auto;
 }
 
-/* Highlighted Hint (balanced for mobile) */
+/* Hint */
 .hint{
   margin-top:14px;
   font-size:14px;
@@ -147,13 +153,6 @@ canvas{
   inset:0;
   pointer-events:none;
   z-index:1;
-}
-
-/* Larger screens */
-@media(min-width:600px){
-  h1{font-size:24px}
-  .dp{width:120px;height:120px}
-  .hint{font-size:15px}
 }
 </style>
 </head>
@@ -197,15 +196,21 @@ let i=0, typingActive=true;
   }
 })();
 
-/* NO dodge */
+/* NO button movement (2D, fixed) */
 const noBtn=document.getElementById("noBtn");
 const buttons=document.getElementById("buttons");
+
 function moveNo(){
   const r = buttons.getBoundingClientRect();
   noBtn.style.position="absolute";
-  noBtn.style.left=Math.random()*(r.width-noBtn.offsetWidth)+"px";
-  noBtn.style.top=Math.random()*(r.height-noBtn.offsetHeight)+"px";
+
+  const maxX = r.width - noBtn.offsetWidth;
+  const maxY = r.height - noBtn.offsetHeight;
+
+  noBtn.style.left = Math.random()*maxX + "px";
+  noBtn.style.top  = Math.random()*maxY + "px";
 }
+
 noBtn.addEventListener("mouseenter", moveNo);
 noBtn.addEventListener("touchstart", moveNo);
 
@@ -245,7 +250,7 @@ function animate(){
 }
 animate();
 
-/* YES + WhatsApp */
+/* YES */
 const yesBtn=document.getElementById("yesBtn");
 const dp=document.getElementById("dp");
 const dpImg=document.getElementById("dpImg");
@@ -266,10 +271,8 @@ yesBtn.onclick=()=>{
   dp.classList.add("bounce");
 
   setTimeout(()=>{
-    const msg = "I%20tried%20to%20say%20no...%20but%20YES%20%F0%9F%98%82%E2%9D%A4%EF%B8%8F";
-window.location.href = "https://wa.me/919788480008?text=" + msg;
-
-  
+    window.location.href =
+      "https://wa.me/919788480008?text=I%20tried%20to%20say%20no...%20but%20YES%20%F0%9F%98%82%E2%9D%A4%EF%B8%8F";
   },3000);
 };
 
