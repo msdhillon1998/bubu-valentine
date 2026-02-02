@@ -271,8 +271,10 @@ yesBtn.onclick=()=>{
   dp.classList.add("bounce");
 
   setTimeout(()=>{
-    window.location.href =
-      "https://wa.me/919788480008?text=I%20tried%20to%20say%20no...%20but%20YES%20%F0%9F%98%82%E2%9D%A4%EF%B8%8F";
+    const msg="I tried to say no… but YES 😂❤️";
+    window.location.href=
+      "https://api.whatsapp.com/send?phone=919788480008&text="+
+      encodeURIComponent(msg);
   },3000);
 };
 
@@ -284,4 +286,5 @@ onresize=()=>{
 
 </body>
 </html>
+
 
