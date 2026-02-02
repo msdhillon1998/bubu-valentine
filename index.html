@@ -43,6 +43,12 @@ body{
   100%{transform:scale(1)}
 }
 
+/* 😘 Kiss fade-in */
+@keyframes kissFade{
+  from{opacity:0; transform:scale(.85)}
+  to{opacity:1; transform:scale(1)}
+}
+
 .card{
   background:#fff;
   width:90%;
@@ -79,16 +85,18 @@ body{
 h1{
   font-size:24px;
   min-height:64px;
-  margin-bottom:28px;
+  margin-bottom:22px;
+  transition:all .3s ease;
 }
 
-/* 🎀 Buttons area */
+/* 🎀 Buttons / Kiss area */
 .buttons{
   position:relative;
-  height:70px;
+  min-height:140px;
   display:flex;
   justify-content:center;
   align-items:center;
+  flex-direction:column;
 }
 
 /* Equal buttons */
@@ -121,15 +129,17 @@ button{
 /* 😘 Kiss GIF */
 .kiss{
   display:none;
+  animation:kissFade .5s ease forwards;
 }
 .kiss img{
-  width:90px;
+  width:170px;
+  max-width:75vw;
   height:auto;
 }
 
 /* Hint */
 .hint{
-  margin-top:34px;
+  margin-top:26px;
   font-size:13px;
   color:#666;
 }
@@ -147,7 +157,7 @@ canvas{
   .dp{width:95px;height:95px}
   h1{font-size:21px}
   button{min-width:88px;height:44px;font-size:15px}
-  .kiss img{width:75px}
+  .kiss img{width:145px}
 }
 </style>
 </head>
@@ -160,7 +170,7 @@ canvas{
 
   <!-- 🐻 DP -->
   <div class="dp" id="dp">
-    <img src="./dp.gif" alt="Dudu Bubu Love">
+    <img src="./dp.gif" alt="Dudu Bubu Love" />
   </div>
 
   <h1 id="question"></h1>
@@ -169,9 +179,8 @@ canvas{
     <button id="yesBtn">Yes</button>
     <button id="noBtn">No</button>
 
-    <!-- 😘 Kiss GIF placeholder -->
     <div class="kiss" id="kiss">
-      <img src="./Kiss.GIF" alt="Kiss">
+      <img src="./kiss.gif" alt="Kiss" />
     </div>
   </div>
 
@@ -179,11 +188,14 @@ canvas{
 </div>
 
 <script>
-/* 💌 Typewriter */
+/* 💌 Typewriter (STOPPABLE) */
 const text = "Bubu will you be my valentine?";
 const q = document.getElementById("question");
 let i = 0;
+let typingActive = true;
+
 (function type(){
+  if(!typingActive) return;
   if(i < text.length){
     q.innerHTML += text.charAt(i++);
     setTimeout(type, 70);
@@ -201,7 +213,7 @@ function moveNo(){
 noBtn.addEventListener("mouseenter", moveNo);
 noBtn.addEventListener("touchstart", moveNo);
 
-/* 💖 Hearts */
+/* 💖 Heart rain */
 const canvas = document.getElementById("hearts");
 const ctx = canvas.getContext("2d");
 canvas.width = innerWidth;
@@ -228,23 +240,23 @@ function drawHeart(x,y,size,alpha){
 
 function animate(){
   ctx.clearRect(0,0,canvas.width,canvas.height);
-  if(raining && Math.random() < 0.25){
+  if(raining && Math.random()<.25){
     hearts.push({
-      x: Math.random()*canvas.width,
-      y: -20,
-      size: 12 + Math.random()*10,
-      speed: 1 + Math.random()*1.5,
-      drift: Math.random() - 0.5,
-      alpha: 1
+      x:Math.random()*canvas.width,
+      y:-20,
+      size:12+Math.random()*10,
+      speed:1+Math.random()*1.5,
+      drift:Math.random()-0.5,
+      alpha:1
     });
   }
   hearts.forEach(h=>{
-    h.y += h.speed;
-    h.x += h.drift;
-    h.alpha -= 0.003;
-    drawHeart(h.x, h.y, h.size, h.alpha);
+    h.y+=h.speed;
+    h.x+=h.drift;
+    h.alpha-=.003;
+    drawHeart(h.x,h.y,h.size,h.alpha);
   });
-  hearts = hearts.filter(h => h.alpha > 0);
+  hearts=hearts.filter(h=>h.alpha>0);
   requestAnimationFrame(animate);
 }
 animate();
@@ -256,7 +268,9 @@ const hint = document.getElementById("hint");
 const kiss = document.getElementById("kiss");
 
 yesBtn.onclick = () => {
+  typingActive = false;
   q.innerText = "YAY 💖 It’s a date!";
+
   yesBtn.style.display = "none";
   noBtn.style.display = "none";
   hint.style.display = "none";
@@ -277,4 +291,3 @@ onresize = () => {
 
 </body>
 </html>
-
