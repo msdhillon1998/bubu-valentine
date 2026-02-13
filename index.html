@@ -99,7 +99,7 @@ button{
   background:#ff4d6d;
   color:#fff;
   transition:transform .2s ease, box-shadow .2s ease;
-  box-shadow:0 0 12px rgba(255,77,109,.4);
+  box-shadow:0 0 16px rgba(255,77,109,.5);
   position:relative;
   z-index:2;
 }
@@ -108,9 +108,9 @@ button{
 #noBtn{
   background:#eee;
   color:#333;
-  transition:left .08s linear, top .08s linear;
   position:relative;
   z-index:1;
+  transition:left .08s linear, top .08s linear;
 }
 
 /* JWM */
@@ -183,19 +183,22 @@ let i=0;
   }
 })();
 
-/* YES scaling logic */
+/* YES scaling */
 const yesBtn=document.getElementById("yesBtn");
 let yesScale=1;
 
 function growYes(amount){
-  yesScale=Math.min(yesScale+amount,1.6);
+  yesScale=Math.min(yesScale+amount,2.2);
   yesBtn.style.transform=`scale(${yesScale})`;
-  yesBtn.style.boxShadow=`0 0 ${12+yesScale*12}px rgba(255,77,109,.9)`;
+
+  yesBtn.style.boxShadow=
+    `0 0 ${20+yesScale*20}px rgba(255,77,109,1),
+     0 0 ${40+yesScale*30}px rgba(255,77,109,.6)`;
 }
 
-/* Hover over YES */
-yesBtn.addEventListener("mouseenter",()=>growYes(0.03));
-yesBtn.addEventListener("touchstart",()=>growYes(0.03));
+/* Hover YES */
+yesBtn.addEventListener("mouseenter",()=>growYes(0.06));
+yesBtn.addEventListener("touchstart",()=>growYes(0.06));
 
 /* NO movement */
 const noBtn=document.getElementById("noBtn");
@@ -206,8 +209,8 @@ function moveNo(){
   if(moving) return;
   moving=true;
 
-  /* 🔥 Grow YES more when NO is chased */
-  growYes(0.08);
+  /* Grow YES more aggressively when NO is chased */
+  growYes(0.15);
 
   const r=buttons.getBoundingClientRect();
   const pad=20;
